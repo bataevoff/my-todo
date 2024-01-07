@@ -1,6 +1,6 @@
 import React from "react";
 
-function Form({ onSubmit, onChange, onClick, title }) {
+function Form({ onSubmit, onChange, onClick, title, editId }) {
   return (
     <form onSubmit={onSubmit}>
       <input
@@ -10,7 +10,7 @@ function Form({ onSubmit, onChange, onClick, title }) {
         value={title}
         placeholder="Add text"
       />
-      <button onClick={onClick}>Add Task</button>
+      <button onClick={onClick}>{editId ? "Update todo" : "Add todo"}</button>
     </form>
   );
 }

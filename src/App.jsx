@@ -32,15 +32,33 @@ function App() {
   };
 
   const handleAddTodo = () => {
+    // if (editId) {
+    //   const editTodo = todos.find((todo) => todo.id === editId);
+    //   const updatedTodos = todos.map((todo) =>
+    //     todo.id === editTodo.id ? (todo = { ...todo, title: title }) : todo
+    //   );
+    //   setTodosAndSave(updatedTodos);
+    //   setEditId(0);
+    //   setTitle("");
+    //   return;
+    // }
+    for (let i = 0; i <= todos.length - 1; i++) {
+      if (todos[i].title === title) {
+        return alert("You alreay have this todo in the list!");
+      }
+    }
+
     if (editId) {
       const editTodo = todos.find((todo) => todo.id === editId);
       const updatedTodos = todos.map((todo) =>
-        todo.id === editTodo.id ? (todo = { ...todo, title: title }) : todo
+        todo.id === editTodo.id ? (todo = { ...todo, title }) : todo
       );
       setTodosAndSave(updatedTodos);
       setEditId(0);
+      setTitle("");
       return;
     }
+
     const filteredTodos = todos.filter((todo) => todo.title === title);
     filteredTodos.length != true &&
       title.trim("") !== "" &&
@@ -94,12 +112,14 @@ function App() {
 
   const handleDeleteAll = () => {
     setTodosAndSave([]);
+    setTitle("");
   };
 
   return (
     <>
       <div>
         <Form
+          editId={editId}
           onClick={handleAddTodo}
           onChange={handleChange}
           title={title}
