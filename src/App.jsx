@@ -1,18 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Todo from "./components/Todo.jsx";
 import Form from "./components/Form.jsx";
 
+const LOCAL_STORAGE_KEY = "todo:saveTodos";
+
 function App() {
-  const [count, setCount] = useState(0);
   const [title, setTitle] = useState("");
   const [todos, setTodos] = useState([]);
+  const [editId, setEditId] = useState(0);
 
-  const handlePlus = () => {
-    setCount(count + 1);
+  useEffect(() => {
+    loadSavedTodos();
+  }, []);
+
+  const setTodosAndSave = (newTodos) => {
+    setTodos(newTodos);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newTodos));
   };
 
-  const handleMinus = () => {
-    count <= 0 ? count : setCount(count - 1);
+  const loadSavedTodos = () => {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+    saved && setTodos(JSON.parse(saved));
   };
 
   const onSubmit = (e) => {
@@ -24,37 +32,72 @@ function App() {
   };
 
   const handleAddTodo = () => {
-    title.trim("") === ""
-      ? title
-      : setTodos([
-          ...todos,
-          {
-            title: title,
-            id: crypto.randomUUID(),
-          },
-        ]);
+    if (editId) {
+      const editTodo = todos.find((todo) => todo.id === editId);
+      const updatedTodos = todos.map((todo) =>
+        todo.id === editTodo.id ? (todo = { ...todo, title: title }) : todo
+      );
+      setTodosAndSave(updatedTodos);
+      setEditId(0);
+      return;
+    }
+    const filteredTodos = todos.filter((todo) => todo.title === title);
+    filteredTodos.length != true &&
+      title.trim("") !== "" &&
+      setTodosAndSave([
+        ...todos,
+        {
+          title: title,
+          id: crypto.randomUUID(),
+          isCompleted: false,
+        },
+      ]);
     setTitle("");
+
+    // if (title.trim("") !== "") {
+    //   setTodosAndSave([...todos, { title, id: `${title}-${Date.now()}` }]);
+    //   setTitle("");
+    // }
+    // if (editId) {
+    //   const editTodo = todos.find((todo) => todo.id === editId);
+    //   const updatedTodos = todos.map((todo) =>
+    //     todo.id === editTodo.id ? (todo = { ...todo, title }) : todo
+    //   );
+    //   setTodosAndSave(updatedTodos);
+    //   setEditId(0);
+    //   return;
+    // }
+  };
+
+  const handleToggle = (id) => {
+    const newTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          isCompleted: !todo.isCompleted,
+        };
+      }
+      return todo;
+    });
+    setTodosAndSave(newTodos);
   };
 
   const handleDelete = (id) => {
-    setTodos(todos.filter((task) => task.id != id));
+    setTodosAndSave(todos.filter((task) => task.id != id));
+  };
+
+  const handleEdit = (id) => {
+    const editTodo = todos.find((todo) => todo.id === id);
+    setTitle(editTodo.title);
+    setEditId(id);
+  };
+
+  const handleDeleteAll = () => {
+    setTodosAndSave([]);
   };
 
   return (
     <>
-      <div>
-        <h1>Count {count}</h1>
-        <div>
-          <button onClick={handlePlus} className="plus">
-            +
-          </button>
-        </div>
-        <div>
-          <button onClick={handleMinus} className="minus">
-            -
-          </button>
-        </div>
-      </div>
       <div>
         <Form
           onClick={handleAddTodo}
@@ -64,8 +107,15 @@ function App() {
         />
       </div>
       {todos.map((todo) => (
-        <Todo todo={todo} key={todo.id} onDelete={handleDelete} />
+        <Todo
+          todo={todo}
+          key={todo.id}
+          onDelete={handleDelete}
+          onComplete={handleToggle}
+          onEdit={handleEdit}
+        />
       ))}
+      <button onClick={handleDeleteAll}>Delete All</button>
     </>
   );
 }
