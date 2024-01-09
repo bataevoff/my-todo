@@ -31,20 +31,17 @@ function App() {
     setTitle(e.target.value);
   };
 
+  const handleCancel = () => {
+    setTitle("");
+    setEditId(0);
+  };
+
   const handleAddTodo = () => {
-    // if (editId) {
-    //   const editTodo = todos.find((todo) => todo.id === editId);
-    //   const updatedTodos = todos.map((todo) =>
-    //     todo.id === editTodo.id ? (todo = { ...todo, title: title }) : todo
-    //   );
-    //   setTodosAndSave(updatedTodos);
-    //   setEditId(0);
-    //   setTitle("");
-    //   return;
-    // }
     for (let i = 0; i <= todos.length - 1; i++) {
       if (todos[i].title === title) {
-        return alert("You alreay have this todo in the list!");
+        return alert("You already have this todo in the list!");
+      } else if (title.trim("") === "") {
+        return alert("Add text!");
       }
     }
 
@@ -59,32 +56,18 @@ function App() {
       return;
     }
 
-    const filteredTodos = todos.filter((todo) => todo.title === title);
-    filteredTodos.length != true &&
-      title.trim("") !== "" &&
-      setTodosAndSave([
-        ...todos,
-        {
-          title: title,
-          id: crypto.randomUUID(),
-          isCompleted: false,
-        },
-      ]);
+    // const filteredTodos = todos.filter((todo) => todo.title === title);
+    // filteredTodos.length != true &&
+    //   title.trim("") !== "" &&
+    setTodosAndSave([
+      ...todos,
+      {
+        title: title,
+        id: crypto.randomUUID(),
+        isCompleted: false,
+      },
+    ]);
     setTitle("");
-
-    // if (title.trim("") !== "") {
-    //   setTodosAndSave([...todos, { title, id: `${title}-${Date.now()}` }]);
-    //   setTitle("");
-    // }
-    // if (editId) {
-    //   const editTodo = todos.find((todo) => todo.id === editId);
-    //   const updatedTodos = todos.map((todo) =>
-    //     todo.id === editTodo.id ? (todo = { ...todo, title }) : todo
-    //   );
-    //   setTodosAndSave(updatedTodos);
-    //   setEditId(0);
-    //   return;
-    // }
   };
 
   const handleToggle = (id) => {
@@ -124,6 +107,7 @@ function App() {
           onChange={handleChange}
           title={title}
           onSubmit={onSubmit}
+          onCancel={handleCancel}
         />
       </div>
       {todos.map((todo) => (
