@@ -1,6 +1,18 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteTodo, toggleEdit } from "../features/TodoReducer";
 
-function Todo({ todo, onDelete, onComplete, onEdit }) {
+function Todo({ todo }) {
+  const dispatch = useDispatch();
+
+  const handleDelete = (id) => {
+    dispatch(deleteTodo({ id }));
+  };
+
+  const handleToggle = (id) => {
+    dispatch(toggleEdit({ id }));
+  };
   return (
     <div>
       <div
@@ -12,13 +24,15 @@ function Todo({ todo, onDelete, onComplete, onEdit }) {
       >
         {todo.title}
       </div>
-      <button onClick={() => onDelete(todo.id)}>X</button>
+      <button onClick={() => handleDelete(todo.id)}>X</button>
       <input
         type="checkbox"
-        checked={todo.isCompleted && true}
-        onClick={() => onComplete(todo.id)}
+        defaultChecked={todo.isCompleted && true}
+        onClick={() => handleToggle(todo.id)}
       />
-      <button onClick={() => onEdit(todo.id)}>Edit</button>
+      <Link to={`edit/${todo.id}`}>
+        <button>Edit</button>
+      </Link>
     </div>
   );
 }
