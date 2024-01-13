@@ -1,16 +1,22 @@
 import Todo from "../components/Todo.jsx";
 import { useDispatch, useSelector } from "react-redux";
-import { deletAll } from "../features/TodoReducer.js";
+import { deleteAll, fetchTodos } from "../features/TodoReducer.js";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 function Home() {
   const dispatch = useDispatch();
 
-  const todos = useSelector((state) => state.todos);
+  const todos = useSelector((state) => state.todos.todos);
+  console.log(todos);
 
   const handleDeleteAll = () => {
-    dispatch(deletAll());
+    dispatch(deleteAll());
   };
+
+  useEffect(() => {
+    dispatch(fetchTodos());
+  }, [dispatch]);
 
   return (
     <>

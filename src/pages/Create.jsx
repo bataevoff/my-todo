@@ -16,11 +16,9 @@ function Create() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (title && title.trim() !== "") {
+    if (title.trim() !== "") {
       const newTodo = {
-        id: crypto.randomUUID(),
         title: title,
-        isCompleted: false,
       };
       dispatch(addTodo(newTodo));
       setTitle("");
@@ -42,7 +40,7 @@ function Create() {
       />
       <button>Add todo</button>
       <button>cancel</button>
-      {titleValidation && <div>The field is empty!</div>}
+      {titleValidation && <div>{titleValidation}</div>}
     </form>
   );
 }

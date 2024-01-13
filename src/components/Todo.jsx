@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteTodo, toggleEdit } from "../features/TodoReducer";
+import { useDispatch } from "react-redux";
+import { deleteTodo, toggleTodo } from "../features/TodoReducer";
 
 function Todo({ todo }) {
   const dispatch = useDispatch();
@@ -11,7 +11,8 @@ function Todo({ todo }) {
   };
 
   const handleToggle = (id) => {
-    dispatch(toggleEdit({ id }));
+    dispatch(toggleTodo({ id }));
+    console.log(todo);
   };
   return (
     <div>
