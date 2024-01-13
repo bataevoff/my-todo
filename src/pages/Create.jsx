@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function Create() {
   const [title, setTitle] = useState("");
+  const [titleValidation, setTitleValidation] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -15,14 +16,19 @@ function Create() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newTodo = {
-      id: crypto.randomUUID(),
-      title: title,
-      isCompleted: false,
-    };
-    dispatch(addTodo(newTodo));
-    setTitle("");
-    navigate("/");
+    if (title && title.trim() !== "") {
+      const newTodo = {
+        id: crypto.randomUUID(),
+        title: title,
+        isCompleted: false,
+      };
+      dispatch(addTodo(newTodo));
+      setTitle("");
+      navigate("/");
+      setTitleValidation(null);
+    } else {
+      setTitleValidation("The field is empty, add text!");
+    }
   };
 
   return (
@@ -32,10 +38,11 @@ function Create() {
         type="text"
         name="title"
         value={title}
-        placeholder="Add text"
+        placeholder="Add Text..."
       />
       <button>Add todo</button>
       <button>cancel</button>
+      {titleValidation && <div>The field is empty!</div>}
     </form>
   );
 }
