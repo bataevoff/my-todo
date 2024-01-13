@@ -7,6 +7,7 @@ function Edit() {
   const todos = useSelector((state) => state.todos);
   const { id } = useParams();
   const exisitingTodo = todos.filter((todo) => todo.id === id);
+  console.log(exisitingTodo);
   const { title } = exisitingTodo[0];
   const [editTitle, setEditTitle] = useState(title);
 
